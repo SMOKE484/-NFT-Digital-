@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Camera, Plus, Users, Gift, ChevronRight } from 'lucide-react';
 const logo = '/nft-logo.png';
 
 const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
@@ -37,21 +38,29 @@ export default function Home() {
         <div className="stats">
           <div className="stat">
             <span className="stat-value">{cards.length}</span>
-            <span className="stat-label">Cards</span>
+            <span className="stat-label">
+              <Users size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+              Cards
+            </span>
           </div>
           <div className="stat">
             <span className="stat-value">{totalRedeemed}</span>
-            <span className="stat-label">Rewards Given</span>
+            <span className="stat-label">
+              <Gift size={11} style={{ display: 'inline', marginRight: 3, verticalAlign: 'middle' }} />
+              Rewards Given
+            </span>
           </div>
         </div>
       </div>
 
       <div className="btn-row">
         <button className="btn btn-primary" onClick={() => navigate('/scan')}>
-          📷 Scan Card
+          <Camera size={18} />
+          Scan Card
         </button>
         <button className="btn btn-secondary" onClick={() => navigate('/new')}>
-          + New Card
+          <Plus size={18} />
+          New Card
         </button>
       </div>
 
@@ -76,9 +85,12 @@ export default function Home() {
               >
                 <div className="card-item-top">
                   <span className="card-name">{card.customerName}</span>
-                  <span className={`badge ${full ? 'badge-free' : expired ? 'badge-expired' : 'badge-active'}`}>
-                    {full ? '🎉 FREE!' : expired ? 'Expired' : `${card.stamps}/10`}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span className={`badge ${full ? 'badge-free' : expired ? 'badge-expired' : 'badge-active'}`}>
+                      {full ? 'FREE!' : expired ? 'Expired' : `${card.stamps}/10`}
+                    </span>
+                    <ChevronRight size={16} color="var(--text-muted)" />
+                  </div>
                 </div>
                 <div className="stamp-mini">
                   {Array.from({ length: 10 }).map((_, i) => (

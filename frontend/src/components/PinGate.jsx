@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Lock, ShieldCheck } from 'lucide-react';
 
 const SESSION_KEY = 'nft_pin_ok';
 
@@ -77,7 +78,9 @@ export default function PinGate({ children }) {
           />
           {error && <div className="error-box">{error}</div>}
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Checking...' : 'Unlock'}
+            {loading
+              ? <><ShieldCheck size={18} /> Checking...</>
+              : <><Lock size={18} /> Unlock</>}
           </button>
         </form>
       </div>

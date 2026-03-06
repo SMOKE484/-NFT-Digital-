@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, User, Phone, ArrowRight } from 'lucide-react';
 
 export default function NewCard() {
   const navigate = useNavigate();
@@ -33,13 +34,18 @@ export default function NewCard() {
   return (
     <div className="page">
       <div className="page-header">
-        <button className="btn-back" onClick={() => navigate('/')}>← Back</button>
+        <button className="btn-back" onClick={() => navigate('/')}>
+          <ChevronLeft size={20} /> Back
+        </button>
         <h2>New Card</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="form-card">
         <div className="form-group">
-          <label htmlFor="name">Customer Name *</label>
+          <label htmlFor="name">
+            <User size={14} style={{ display: 'inline', marginRight: 5, verticalAlign: 'middle' }} />
+            Customer Name *
+          </label>
           <input
             id="name"
             type="text"
@@ -52,7 +58,10 @@ export default function NewCard() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone Number (optional)</label>
+          <label htmlFor="phone">
+            <Phone size={14} style={{ display: 'inline', marginRight: 5, verticalAlign: 'middle' }} />
+            Phone Number (optional)
+          </label>
           <input
             id="phone"
             type="tel"
@@ -66,7 +75,12 @@ export default function NewCard() {
         {error && <div className="error-box">{error}</div>}
 
         <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Creating...' : 'Create Card →'}
+          {loading ? 'Creating...' : (
+            <>
+              Create Card
+              <ArrowRight size={16} />
+            </>
+          )}
         </button>
       </form>
     </div>

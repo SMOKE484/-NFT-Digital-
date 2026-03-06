@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
+import { ChevronLeft, Printer, Share2, Home as HomeIcon } from 'lucide-react';
 const logo = '/nft-logo.png';
 
 export default function PrintCard() {
@@ -34,12 +35,15 @@ export default function PrintCard() {
   return (
     <div className="page print-page">
       <div className="page-header" style={{ width: '100%' }}>
-        <button className="btn-back" onClick={() => navigate('/')}>← Home</button>
+        <button className="btn-back" onClick={() => navigate('/')}>
+          <ChevronLeft size={20} /> Home
+        </button>
         <h2>Print Card</h2>
       </div>
 
       <div className="print-note">
-        🖨️ Print this card and hand it to the customer. You won't need this screen again.
+        <Printer size={16} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
+        Print this card and hand it to the customer. You won't need this screen again.
       </div>
 
       <div className="qr-card">
@@ -51,10 +55,12 @@ export default function PrintCard() {
       </div>
 
       <button className="btn btn-primary" style={{ width: '100%' }} onClick={handleShare}>
-        📤 Share / Screenshot
+        <Share2 size={18} />
+        Share / Screenshot
       </button>
 
       <button className="btn btn-secondary" style={{ width: '100%' }} onClick={() => navigate('/')}>
+        <HomeIcon size={18} />
         Done — Go to Home
       </button>
     </div>

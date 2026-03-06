@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Html5Qrcode } from 'html5-qrcode';
+import { ChevronLeft, ScanLine, Loader2 } from 'lucide-react';
 
 export default function Scan() {
   const navigate = useNavigate();
@@ -40,7 +41,6 @@ export default function Scan() {
             setProcessing(true);
 
             try {
-              // Check card state
               const cardRes = await fetch(`/api/cards/${decoded}`);
               const card = await cardRes.json();
 
@@ -49,13 +49,11 @@ export default function Scan() {
                 return;
               }
 
-              // Card is full — navigate to show Redeem button, don't auto-stamp
               if (card.stamps === 10) {
                 navigate(`/card/${decoded}`, { state: { needsRedeem: true } });
                 return;
               }
 
-              // Auto-add stamp
               const stampRes = await fetch(`/api/cards/${decoded}/stamp`, { method: 'POST' });
               const stampData = await stampRes.json();
 
@@ -84,16 +82,24 @@ export default function Scan() {
   return (
     <div className="page scan-page">
       <div className="page-header">
-        <button className="btn-back" onClick={() => navigate('/')}>← Back</button>
+        <button className="btn-back" onClick={() => navigate('/')}>
+          <ChevronLeft size={20} /> Back
+        </button>
         <h2>Scan Card</h2>
       </div>
 
-      <p className="scan-hint">Point camera at QR code — stamp added automatically</p>
+      <p className="scan-hint">
+        <ScanLine size={15} style={{ display: 'inline', marginRight: 5, verticalAlign: 'middle' }} />
+        Point camera at QR code — stamp added automatically
+      </p>
 
       {error ? (
         <div className="error-box">{error}</div>
       ) : processing ? (
-        <div className="scan-processing">Adding stamp...</div>
+        <div className="scan-processing">
+          <Loader2 size={28} className="spin" />
+          Adding stamp...
+        </div>
       ) : (
         <div className="qr-reader-wrap">
           <div id="qr-reader" />
