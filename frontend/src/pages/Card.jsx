@@ -34,20 +34,27 @@ export default function Card() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    const state = location.state;
+
+    // If card data was passed from Scan (auto-stamp flow), use it immediately
+    if (state?.card) {
+      setCard(state.card);
+      if (state.freeEarned) {
+        setSuccess('10 stamps! Give the customer their free reward, then tap Redeem.');
+      } else {
+        setSuccess(`Stamp added! ${10 - state.card.stamps} more to go.`);
+      }
+      setLoading(false);
+      return;
+    }
+
     fetch(`/api/cards/${cardId}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setError(data.error);
         else {
           setCard(data);
-          const state = location.state;
-          if (state?.autoStamped) {
-            if (state.freeEarned) {
-              setSuccess('10 stamps! Give the customer their free reward, then tap Redeem.');
-            } else {
-              setSuccess(`Stamp added! ${10 - data.stamps} more to go.`);
-            }
-          } else if (state?.needsRedeem) {
+          if (state?.needsRedeem) {
             setSuccess('Card is full! Tap Redeem to give the free reward.');
           }
         }

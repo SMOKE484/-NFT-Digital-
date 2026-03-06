@@ -58,7 +58,7 @@ export default function Scan() {
               const stampData = await stampRes.json();
 
               navigate(`/card/${decoded}`, {
-                state: { autoStamped: true, freeEarned: stampData.freeEarned },
+                state: { autoStamped: true, freeEarned: stampData.freeEarned, card: stampData.card },
               });
             } catch {
               navigate(`/card/${decoded}`);
