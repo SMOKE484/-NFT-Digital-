@@ -402,6 +402,14 @@ html, body {
   color: #8aa0cc;
 }
 
+.scan-processing {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cyan);
+  padding: 60px 20px;
+}
+
 .qr-reader-wrap {
   width: 100%;
   border-radius: 12px;

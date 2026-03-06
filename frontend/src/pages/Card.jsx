@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -25,6 +25,7 @@ function formatDate(date) {
 export default function Card() {
   const { cardId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [card, setCard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -36,7 +37,20 @@ export default function Card() {
       .then((r) => r.json())
       .then((data) => {
         if (data.error) setError(data.error);
-        else setCard(data);
+        else {
+          setCard(data);
+          // Show message if stamp was added automatically from scan
+          const state = location.state;
+          if (state?.autoStamped) {
+            if (state.freeEarned) {
+              setSuccess('🎉 10 stamps! Give the customer their free reward, then tap Redeem.');
+            } else {
+              setSuccess(`✅ Stamp added! ${10 - data.stamps} more to go.`);
+            }
+          } else if (state?.needsRedeem) {
+            setSuccess('🎉 Card is full! Tap Redeem to give the free reward.');
+          }
+        }
         setLoading(false);
       })
       .catch(() => { setError('Failed to load card.'); setLoading(false); });

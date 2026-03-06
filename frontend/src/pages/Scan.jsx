@@ -7,6 +7,7 @@ export default function Scan() {
   const scannerRef = useRef(null);
   const doneRef = useRef(false);
   const [error, setError] = useState('');
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     const qrcode = new Html5Qrcode('qr-reader');
@@ -20,7 +21,6 @@ export default function Scan() {
           return;
         }
 
-        // Prefer back/environment camera
         const cam =
           cameras.find(
             (c) =>
@@ -36,9 +36,37 @@ export default function Scan() {
             if (doneRef.current) return;
             doneRef.current = true;
             try { await qrcode.stop(); } catch (_) {}
-            navigate(`/card/${decoded}`);
+
+            setProcessing(true);
+
+            try {
+              // Check card state
+              const cardRes = await fetch(`/api/cards/${decoded}`);
+              const card = await cardRes.json();
+
+              if (card.error) {
+                navigate(`/card/${decoded}`);
+                return;
+              }
+
+              // Card is full — navigate to show Redeem button, don't auto-stamp
+              if (card.stamps === 10) {
+                navigate(`/card/${decoded}`, { state: { needsRedeem: true } });
+                return;
+              }
+
+              // Auto-add stamp
+              const stampRes = await fetch(`/api/cards/${decoded}/stamp`, { method: 'POST' });
+              const stampData = await stampRes.json();
+
+              navigate(`/card/${decoded}`, {
+                state: { autoStamped: true, freeEarned: stampData.freeEarned },
+              });
+            } catch {
+              navigate(`/card/${decoded}`);
+            }
           },
-          () => {} // ignore per-frame errors
+          () => {}
         );
       } catch {
         setError('Camera access denied. Please allow camera permission and try again.');
@@ -60,10 +88,12 @@ export default function Scan() {
         <h2>Scan Card</h2>
       </div>
 
-      <p className="scan-hint">Point camera at the QR code on the customer's card</p>
+      <p className="scan-hint">Point camera at QR code — stamp added automatically</p>
 
       {error ? (
         <div className="error-box">{error}</div>
+      ) : processing ? (
+        <div className="scan-processing">Adding stamp...</div>
       ) : (
         <div className="qr-reader-wrap">
           <div id="qr-reader" />
