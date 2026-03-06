@@ -1,4 +1,4 @@
-const CACHE_NAME = 'icecream-loyalty-v1';
+const CACHE_NAME = 'icecream-loyalty-v2';
 const STATIC_ASSETS = ['/', '/index.html'];
 
 self.addEventListener('install', (event) => {
